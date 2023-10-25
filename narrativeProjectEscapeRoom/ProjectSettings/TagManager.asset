@@ -5,6 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - morseCodeSounds
+  - Radio
+  - cabinet
+  - IMac
+  - Clock
+  - PToE
+  - Calendar
+  - Door
+  - PinpadSafe
+  - BookSafe
   layers:
   - Default
   - TransparentFX

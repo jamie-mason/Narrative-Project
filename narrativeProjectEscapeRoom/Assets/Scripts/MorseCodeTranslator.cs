@@ -14,11 +14,19 @@ public class MorseCodeTranslator : MonoBehaviour
     public float letterDelay;
 
     //morse code numbers
-    private string[] numbers =
-        {/*0*/"-----", /*1*/".----", /*2*/"..---", 
-        /*3*/"...--" , /*4*/ "....-", /*5*/ ".....", 
-        /*6*/"-....", /*7*/"--...", /*8*/ "---..", 
-        /*9*/"----."};
+    private string[] characters =
+     //A     B       C       D      E    F       G
+    {".-", "-...", "-.-.", "-..", ".", "..-.", "--.",
+    //H       I     J       K      L       M     N
+     "....", "..", ".---", "-.-", ".-..", "--", "-.",
+    //O      P       Q       R      S      T    U
+     "---", ".--.", "--.-", ".-.", "...", "-", "..-",
+    //V       W      X       Y       Z
+     "...-", ".--", "-..-", "-.--", "--..",
+    //0        1        2        3        4        
+     "-----", ".----", "..---", "...--", "....-",
+    //5        6        7        8        9    
+     ".....", "-....", "--...", "---..", "----."};
 
     public void PlayMorseCodeMessage(string message)
     {
@@ -27,19 +35,23 @@ public class MorseCodeTranslator : MonoBehaviour
     private IEnumerator _PlayMorseCodeMessage(string code)
     {
         coroutineRunning = true;
-        foreach (char number in code.ToCharArray())
+        Regex regex = new Regex("[^A-z0-9 ]");
+        code = regex.Replace(code.ToUpper(), "");
+
+
+        foreach (char character in code.ToCharArray())
         {
-            if (number == ' ')
+            if (character == ' ')
             {
                 Debug.Log("space found");
                 yield return new WaitForSeconds(spaceDelay);
             }
             else
             {
-                int index = number - '0';
+                int index = character - 'A';
                 if (index < 0)
-                    Debug.LogError("Index less than 0");
-                string numberCode = numbers[index];
+                    index = character - '0' + 26;
+                string numberCode = characters[index];
                 foreach (char bit in numberCode)
                 {
                     // Dot or Dash?

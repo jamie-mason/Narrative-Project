@@ -22,6 +22,7 @@ public class PasswordInput : MonoBehaviour
             passwordText.text = "";
         }
         GenerateRandomNo();
+        password.gameObject.SetActive(false);
     }
    
     public bool correctPasswordEntered()

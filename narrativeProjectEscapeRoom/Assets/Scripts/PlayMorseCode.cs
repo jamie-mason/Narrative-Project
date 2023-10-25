@@ -8,42 +8,83 @@ public class PlayMorseCode : MonoBehaviour
     private PasswordInput password;
     private MorseCodeTranslator MorseCodeTranslator;
     private GameObject MorseCodeTranslationImage;
+    [SerializeField] private GameObject cam;
+    private Vector3 camPos;
+    private bool isFocused;
 
-    private void Start()
+    public bool getIsFocused()
+    {
+        return isFocused;
+    }
+    private void Awake()
     {
         password = GameObject.Find("InputManager")?.GetComponent<PasswordInput>();
         MorseCodeTranslator = GameObject.Find("MorseCode")?.GetComponent<MorseCodeTranslator>();
-        MorseCodeTranslationImage = GameObject.Find("MorseCodeTranslator");
-        if (MorseCodeTranslationImage.activeInHierarchy)
+        MorseCodeTranslationImage = GameObject.Find("IVMorseCodeTranslator");
+        if (cam == null)
+        {
+            cam = GameObject.FindWithTag("MainCamera");
+        }
+
+    }
+    private void Start()
+    {
+        
+        if (MorseCodeTranslationImage.activeSelf)
         {
             MorseCodeTranslationImage.SetActive(false);
         }
     }
-
-    private void Update()
+    public void getClickedRadio()
     {
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit raycastHit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out raycastHit, 100f))
+            if (Physics.Raycast(ray, out raycastHit, 1000f))
             {
                 if (raycastHit.transform != null)
                 {
                     CurrentClickedGameObject(raycastHit.transform.gameObject);
+
                 }
             }
         }
-    }
-    public void CurrentClickedGameObject(GameObject gameObject)
-    {
-        if (gameObject.name == "Radio" && !MorseCodeTranslator.getCoroutineIsRunning() && MorseCodeTranslationImage.activeInHierarchy)
+        if (isFocused)
         {
-            MorseCodeTranslator.PlayMorseCodeMessage(password.GetRandNum());
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                isFocused = false;
+                cam.transform.position = camPos;
+            }
         }
         else
         {
+            camPos = cam.transform.position;
+
 
         }
+    }
+
+
+    public void CurrentClickedGameObject(GameObject gameObject)
+    {
+        
+        if (gameObject.tag == "Radio" && !MorseCodeTranslator.getCoroutineIsRunning() && MorseCodeTranslationImage.activeInHierarchy && isFocused)
+        {
+            MorseCodeTranslator.PlayMorseCodeMessage(password.GetRandNum());
+        }
+        else if(gameObject.tag == "Radio" && MorseCodeTranslator.getCoroutineIsRunning())
+        {
+            
+        }
+        else if (gameObject.tag == "Radio")
+        {
+            isFocused = true;
+            cam.transform.position = new Vector3(-1457, 41, 1788.28f);
+        }
+
+
     }
 }
